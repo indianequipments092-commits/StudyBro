@@ -1,0 +1,4 @@
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+const modules=["Content Management","Students","Announcements","Live Control","Analytics","Settings"];
+export default function Dashboard(){return <ScrollView contentContainerStyle={s.page}><Text style={s.badge}>NSG BRO • ADMIN</Text><Text style={s.title}>Dashboard</Text><Text style={s.sub}>Professional phone-first control center</Text>{modules.map((x,i)=><View key={x} style={s.card}><Text style={s.h}>{x}</Text><Text>{i===0?"Manage Video, DPP, PYQ and PDF resources":"Module ready for integration"}</Text></View>)}</ScrollView>}
+const s=StyleSheet.create({page:{padding:24,gap:14},badge:{fontSize:12,fontWeight:"800",letterSpacing:1},title:{fontSize:36,fontWeight:"900"},sub:{fontSize:15},card:{padding:20,borderWidth:1,borderRadius:20,gap:6},h:{fontSize:19,fontWeight:"800"}});

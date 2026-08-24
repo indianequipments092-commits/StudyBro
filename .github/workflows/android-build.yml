@@ -18,29 +18,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: apps/student/package.json
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: '17'
       - name: Install Student dependencies
         working-directory: apps/student
         run: npm install
       - name: Generate Student Android project
         working-directory: apps/student
-        run: npx expo prebuild --platform android --non-interactive --clean
+        run: npx expo prebuild --platform android --non-interactive --clean --verbose
       - name: Verify Student Android project
-        working-directory: apps/student
         run: |
-          test -f android/settings.gradle || test -f android/settings.gradle.kts
-          test -f android/gradlew
-          chmod +x android/gradlew
-          echo "Student Android project generated successfully"
+          test -f apps/student/android/settings.gradle || test -f apps/student/android/settings.gradle.kts
+          test -f apps/student/android/gradlew
+          chmod +x apps/student/android/gradlew
+          echo 'Student Android project verified'
       - name: Build Student APK
-        working-directory: apps/student
-        run: cd android && ./gradlew assembleDebug --no-daemon --stacktrace
+        run: |
+          cd apps/student/android
+          ./gradlew --no-daemon assembleDebug --stacktrace
       - name: Upload Student APK
         uses: actions/upload-artifact@v4
         with:
@@ -57,29 +55,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: apps/admin-nsg/package.json
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: '17'
       - name: Install Admin dependencies
         working-directory: apps/admin-nsg
         run: npm install
       - name: Generate Admin Android project
         working-directory: apps/admin-nsg
-        run: npx expo prebuild --platform android --non-interactive --clean
+        run: npx expo prebuild --platform android --non-interactive --clean --verbose
       - name: Verify Admin Android project
-        working-directory: apps/admin-nsg
         run: |
-          test -f android/settings.gradle || test -f android/settings.gradle.kts
-          test -f android/gradlew
-          chmod +x android/gradlew
-          echo "Admin Android project generated successfully"
+          test -f apps/admin-nsg/android/settings.gradle || test -f apps/admin-nsg/android/settings.gradle.kts
+          test -f apps/admin-nsg/android/gradlew
+          chmod +x apps/admin-nsg/android/gradlew
+          echo 'Admin Android project verified'
       - name: Build Admin APK
-        working-directory: apps/admin-nsg
-        run: cd android && ./gradlew assembleDebug --no-daemon --stacktrace
+        run: |
+          cd apps/admin-nsg/android
+          ./gradlew --no-daemon assembleDebug --stacktrace
       - name: Upload Admin APK
         uses: actions/upload-artifact@v4
         with:

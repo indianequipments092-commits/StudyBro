@@ -1,0 +1,3 @@
+import { StyleSheet, Text, View } from "react-native";
+export default function Progress(){return <View style={s.page}><Text style={s.title}>Your Progress</Text><View style={s.card}><Text style={s.h}>Study Progress</Text><Text>0% complete</Text><View style={s.track}><View style={s.fill}/></View></View><View style={s.card}><Text style={s.h}>Study Streak 🔥</Text><Text>Start today to build your streak.</Text></View></View>}
+const s=StyleSheet.create({page:{padding:24,gap:16},title:{fontSize:34,fontWeight:"900"},card:{padding:20,borderWidth:1,borderRadius:20,gap:10},h:{fontSize:20,fontWeight:"800"},track:{height:10,borderWidth:1,borderRadius:8,overflow:"hidden"},fill:{width:"0%",height:"100%"}});

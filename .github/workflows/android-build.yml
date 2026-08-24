@@ -8,6 +8,9 @@ on:
 permissions:
   contents: read
 
+env:
+  CI: 1
+
 jobs:
   build-student:
     runs-on: ubuntu-latest
@@ -28,7 +31,9 @@ jobs:
         run: npm install
       - name: Generate Student Android project
         working-directory: apps/student
-        run: npx expo prebuild --platform android --non-interactive --clean --verbose
+        env:
+          CI: 1
+        run: npx expo prebuild --platform android --clean
       - name: Verify Student Android project
         run: |
           test -f apps/student/android/settings.gradle || test -f apps/student/android/settings.gradle.kts

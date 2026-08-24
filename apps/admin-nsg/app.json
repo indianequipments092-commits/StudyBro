@@ -6,7 +6,7 @@
     "orientation":"portrait",
     "userInterfaceStyle":"automatic",
     "scheme":"admin-nsg",
-    "plugins":["expo-router"],
+    "plugins":["expo-router", "expo-constants"],
     "android":{"package":"com.nsgbro.admin"}
   }
 }

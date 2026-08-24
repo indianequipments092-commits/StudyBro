@@ -6,7 +6,7 @@
     "orientation":"portrait",
     "userInterfaceStyle":"automatic",
     "scheme":"studybro",
-    "plugins":["expo-router"],
+    "plugins":["expo-router", "expo-constants"],
     "android":{"package":"com.nsgbro.studybro"}
   }
 }

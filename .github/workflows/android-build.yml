@@ -29,17 +29,26 @@ jobs:
       - name: Install Student dependencies
         working-directory: apps/student
         run: npm install
+      - name: Align Student Expo dependencies
+        working-directory: apps/student
+        env:
+          CI: 1
+        run: |
+          npx expo install --fix
+          npx expo install expo-constants
       - name: Generate Student Android project
         working-directory: apps/student
         env:
           CI: 1
         run: npx expo prebuild --platform android --clean
-      - name: Verify Student Android project
+      - name: Verify Student Expo autolinking
         run: |
           test -f apps/student/android/settings.gradle || test -f apps/student/android/settings.gradle.kts
+          grep -q "expo-autolinking-settings" apps/student/android/settings.gradle || grep -q "expo-autolinking-settings" apps/student/android/settings.gradle.kts
+          grep -q "expoAutolinking.useExpoModules" apps/student/android/settings.gradle || grep -q "expoAutolinking.useExpoModules" apps/student/android/settings.gradle.kts
           test -f apps/student/android/gradlew
           chmod +x apps/student/android/gradlew
-          echo 'Student Android project verified'
+          echo 'Student Android project and Expo autolinking verified'
       - name: Build Student APK
         run: |
           cd apps/student/android

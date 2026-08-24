@@ -1,8 +1,17 @@
 {
-  "name":"studybro",
-  "version":"1.0.0",
-  "private":true,
-  "main":"expo-router/entry",
-  "scripts":{"start":"expo start","android":"expo start --android","build":"eas build --platform android"},
-  "dependencies":{"expo":"~53.0.0","expo-router":"~5.1.0","react":"19.0.0","react-native":"0.79.2"}
+  "name": "studybro",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "build": "eas build --platform android"
+  },
+  "dependencies": {
+    "expo": "~53.0.20",
+    "expo-router": "~5.1.5",
+    "react": "19.0.0",
+    "react-native": "0.79.5"
+  }
 }

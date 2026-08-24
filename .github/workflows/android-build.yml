@@ -11,9 +11,6 @@ permissions:
 jobs:
   build-student:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/student
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,12 +25,21 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Install dependencies
+      - name: Install Student dependencies
+        working-directory: apps/student
         run: npm install
-      - name: Generate Android project
-        run: npx expo prebuild --platform android --non-interactive
+      - name: Generate Student Android project
+        working-directory: apps/student
+        run: npx expo prebuild --platform android --non-interactive --clean
+      - name: Verify Student Gradle project
+        working-directory: apps/student/android
+        run: |
+          test -f settings.gradle || test -f settings.gradle.kts
+          test -x gradlew
+          echo "Student Gradle project verified"
       - name: Build Student APK
-        run: ./android/gradlew assembleDebug --no-daemon
+        working-directory: apps/student/android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
       - name: Upload Student APK
         uses: actions/upload-artifact@v4
         with:
@@ -43,9 +49,6 @@ jobs:
 
   build-admin:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/admin-nsg
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,12 +63,21 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Install dependencies
+      - name: Install Admin dependencies
+        working-directory: apps/admin-nsg
         run: npm install
-      - name: Generate Android project
-        run: npx expo prebuild --platform android --non-interactive
+      - name: Generate Admin Android project
+        working-directory: apps/admin-nsg
+        run: npx expo prebuild --platform android --non-interactive --clean
+      - name: Verify Admin Gradle project
+        working-directory: apps/admin-nsg/android
+        run: |
+          test -f settings.gradle || test -f settings.gradle.kts
+          test -x gradlew
+          echo "Admin Gradle project verified"
       - name: Build Admin APK
-        run: ./android/gradlew assembleDebug --no-daemon
+        working-directory: apps/admin-nsg/android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
       - name: Upload Admin APK
         uses: actions/upload-artifact@v4
         with:

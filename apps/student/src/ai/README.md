@@ -1,5 +1,5 @@
 # NSG BRO AI Foundation
 
-This module defines a provider-agnostic AI teacher contract. It supports doubt, explanation, quiz and revision intents plus optional subject/chapter/topic context and image input metadata.
+The AI module now has a real provider boundary: the student app sends a structured request to a configurable backend/provider endpoint and receives a typed AIResponse. Provider credentials are supplied at runtime and are never hard-coded in source.
 
-The provider/network layer is intentionally separate so API credentials are never hard-coded into the student app.
+The backend endpoint should own provider secrets, rate limits, moderation, logging policy and model selection. The app can use subject, chapter, topic, intent and optional image metadata to build contextual requests.

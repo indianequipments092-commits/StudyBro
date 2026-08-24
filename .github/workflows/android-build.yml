@@ -31,15 +31,16 @@ jobs:
       - name: Generate Student Android project
         working-directory: apps/student
         run: npx expo prebuild --platform android --non-interactive --clean
-      - name: Verify Student Gradle project
-        working-directory: apps/student/android
+      - name: Verify Student Android project
+        working-directory: apps/student
         run: |
-          test -f settings.gradle || test -f settings.gradle.kts
-          test -x gradlew
-          echo "Student Gradle project verified"
+          test -f android/settings.gradle || test -f android/settings.gradle.kts
+          test -f android/gradlew
+          chmod +x android/gradlew
+          echo "Student Android project generated successfully"
       - name: Build Student APK
-        working-directory: apps/student/android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        working-directory: apps/student
+        run: cd android && ./gradlew assembleDebug --no-daemon --stacktrace
       - name: Upload Student APK
         uses: actions/upload-artifact@v4
         with:
@@ -69,15 +70,16 @@ jobs:
       - name: Generate Admin Android project
         working-directory: apps/admin-nsg
         run: npx expo prebuild --platform android --non-interactive --clean
-      - name: Verify Admin Gradle project
-        working-directory: apps/admin-nsg/android
+      - name: Verify Admin Android project
+        working-directory: apps/admin-nsg
         run: |
-          test -f settings.gradle || test -f settings.gradle.kts
-          test -x gradlew
-          echo "Admin Gradle project verified"
+          test -f android/settings.gradle || test -f android/settings.gradle.kts
+          test -f android/gradlew
+          chmod +x android/gradlew
+          echo "Admin Android project generated successfully"
       - name: Build Admin APK
-        working-directory: apps/admin-nsg/android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        working-directory: apps/admin-nsg
+        run: cd android && ./gradlew assembleDebug --no-daemon --stacktrace
       - name: Upload Admin APK
         uses: actions/upload-artifact@v4
         with:

@@ -1,10 +1,3 @@
 import type {FeatureFlag} from "./types";
 function hash(input:string):number{let h=2166136261;for(let i=0;i<input.length;i++){h^=input.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0)%100;}
-export function isFeatureEnabled(flag:FeatureFlag,stableSubjectId:string):boolean{
- if(!flag.enabled)return false;
- const p=flag.rolloutPercent;
- if(p===undefined)return true;
- if(p<=0)return false;
- if(p>=100)return true;
- return hash(flag.key+":"+stableSubjectId)<p;
-}
+export function isFeatureEnabled(flag:FeatureFlag,stableSubjectId:string):boolean{if(!flag.enabled)return false;const p=flag.rolloutPercent;if(p===undefined)return true;if(p<=0)return false;if(p>=100)return true;return hash(flag.key+":"+stableSubjectId)<p;}

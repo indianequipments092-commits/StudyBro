@@ -70,7 +70,9 @@ jobs:
         run: npm install
       - name: Generate Admin Android project
         working-directory: apps/admin-nsg
-        run: npx expo prebuild --platform android --non-interactive --clean --verbose
+        env:
+          CI: 1
+        run: npx expo prebuild --platform android --clean
       - name: Verify Admin Android project
         run: |
           test -f apps/admin-nsg/android/settings.gradle || test -f apps/admin-nsg/android/settings.gradle.kts

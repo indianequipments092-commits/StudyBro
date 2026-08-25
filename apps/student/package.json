@@ -9,9 +9,9 @@
     "build": "eas build --platform android"
   },
   "dependencies": {
-    "expo": "~53.0.20",
-    "expo-router": "~5.1.5",
+    "expo": "53.0.23",
+    "expo-router": "5.1.7",
     "react": "19.0.0",
-    "react-native": "0.79.5"
+    "react-native": "0.79.6"
   }
 }

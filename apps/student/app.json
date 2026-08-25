@@ -1,12 +1,14 @@
 {
-  "expo":{
-    "name":"StudyBro",
-    "slug":"studybro",
-    "version":"1.0.0",
-    "orientation":"portrait",
-    "userInterfaceStyle":"automatic",
-    "scheme":"studybro",
-    "plugins":["expo-router", "expo-constants"],
-    "android":{"package":"com.nsgbro.studybro"}
+  "expo": {
+    "name": "StudyBro",
+    "slug": "studybro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "studybro",
+    "plugins": ["expo-router"],
+    "android": {
+      "package": "com.nsgbro.studybro"
+    }
   }
 }

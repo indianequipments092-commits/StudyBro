@@ -77,6 +77,11 @@ jobs:
       - name: Install Admin dependencies
         working-directory: apps/admin-nsg
         run: npm install
+      - name: Align Admin Expo dependencies
+        working-directory: apps/admin-nsg
+        env:
+          CI: 1
+        run: npx expo install --fix
       - name: Generate Admin Android project
         working-directory: apps/admin-nsg
         env:

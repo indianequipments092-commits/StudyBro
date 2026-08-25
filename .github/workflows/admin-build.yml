@@ -20,38 +20,129 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/admin-nsg/package.json
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - name: Install Admin dependencies
         working-directory: apps/admin-nsg
-        run: npm install
-      - name: Align Admin Expo dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Verify Admin Expo dependency tree
         working-directory: apps/admin-nsg
-        env:
-          CI: 1
-        run: npx expo install --fix
+        run: |
+          node -e "const p=require('./package.json'); console.log('Expo:',p.dependencies.expo); console.log('expo-constants:',p.dependencies['expo-constants']); console.log('expo-router:',p.dependencies['expo-router']); console.log('React Native:',p.dependencies['react-native'])"
+          npx expo-doctor --verbose
+
       - name: Generate Admin Android project
         working-directory: apps/admin-nsg
         env:
           CI: 1
         run: npx expo prebuild --platform android --clean
-      - name: Verify Admin Android project
+
+      - name: Repair and verify Admin Expo autolinking
+        working-directory: apps/admin-nsg
         run: |
-          test -f apps/admin-nsg/android/settings.gradle || test -f apps/admin-nsg/android/settings.gradle.kts
-          test -f apps/admin-nsg/android/gradlew
-          chmod +x apps/admin-nsg/android/gradlew
-          echo 'Admin Android project verified'
+          set -e
+          SETTINGS="android/settings.gradle"
+          if [ ! -f "$SETTINGS" ]; then
+            echo "ERROR: Expo prebuild did not generate android/settings.gradle"
+            exit 1
+          fi
+
+          if ! grep -q 'expoAutolinking.useExpoModules' "$SETTINGS"; then
+            echo "Expo autolinking block missing after prebuild; restoring the SDK 53-compatible settings.gradle."
+            cat > "$SETTINGS" <<'EOF'
+pluginManagement {
+  def reactNativeGradlePlugin = new File(
+    providers.exec {
+      workingDir(rootDir)
+      commandLine("node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })")
+    }.standardOutput.asText.get().trim()
+  ).getParentFile().absolutePath
+  includeBuild(reactNativeGradlePlugin)
+
+  def expoPluginsPath = new File(
+    providers.exec {
+      workingDir(rootDir)
+      commandLine("node", "--print", "require.resolve('expo-modules-autolinking/package.json', { paths: [require.resolve('expo/package.json')] })")
+    }.standardOutput.asText.get().trim(),
+    "../android/expo-gradle-plugin"
+  ).absolutePath
+  includeBuild(expoPluginsPath)
+}
+
+plugins {
+  id("com.facebook.react.settings")
+  id("expo-autolinking-settings")
+}
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+  if (System.getenv('EXPO_USE_COMMUNITY_AUTOLINKING') == '1') {
+    ex.autolinkLibrariesFromCommand()
+  } else {
+    ex.autolinkLibrariesFromCommand(expoAutolinking.rnConfigCommand)
+  }
+}
+
+expoAutolinking.useExpoModules()
+
+rootProject.name = 'admin-nsg'
+expoAutolinking.useExpoVersionCatalog()
+include ':app'
+includeBuild(expoAutolinking.reactNativeGradlePlugin)
+EOF
+          fi
+
+          if ! grep -q 'expoAutolinking.useExpoModules' "$SETTINGS"; then
+            echo "ERROR: Expo autolinking is still missing from settings.gradle"
+            cat "$SETTINGS"
+            exit 1
+          fi
+
+          if ! grep -q 'expo-autolinking-settings' "$SETTINGS"; then
+            echo "ERROR: expo-autolinking-settings plugin is missing"
+            cat "$SETTINGS"
+            exit 1
+          fi
+
+          if [ ! -f android/build.gradle ]; then
+            echo "ERROR: android/build.gradle missing"
+            exit 1
+          fi
+          if ! grep -q 'expo-root-project' android/build.gradle; then
+            echo 'apply plugin: "expo-root-project"' | cat - android/build.gradle > android/build.gradle.tmp
+            mv android/build.gradle.tmp android/build.gradle
+          fi
+
+          if ! grep -q 'autolinkLibrariesWithApp()' android/app/build.gradle; then
+            echo "ERROR: React Native autolinking hook missing from android/app/build.gradle"
+            exit 1
+          fi
+
+          chmod +x android/gradlew
+          echo 'Admin Expo autolinking verified and repaired if necessary.'
+
       - name: Build Admin APK
+        working-directory: apps/admin-nsg/android
+        run: ./gradlew --no-daemon assembleDebug --stacktrace
+
+      - name: Verify Admin APK
+        working-directory: apps/admin-nsg
         run: |
-          cd apps/admin-nsg/android
-          ./gradlew --no-daemon assembleDebug --stacktrace
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+
       - name: Upload Admin APK
         uses: actions/upload-artifact@v4
         with:

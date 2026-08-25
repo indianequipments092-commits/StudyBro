@@ -1,12 +1,14 @@
 {
-  "expo":{
-    "name":"Admin NSG",
-    "slug":"admin-nsg",
-    "version":"1.0.0",
-    "orientation":"portrait",
-    "userInterfaceStyle":"automatic",
-    "scheme":"admin-nsg",
-    "plugins":["expo-router", "expo-constants"],
-    "android":{"package":"com.nsgbro.admin"}
+  "expo": {
+    "name": "Admin NSG",
+    "slug": "admin-nsg",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "admin-nsg",
+    "plugins": ["expo-router"],
+    "android": {
+      "package": "com.nsgbro.admin"
+    }
   }
 }

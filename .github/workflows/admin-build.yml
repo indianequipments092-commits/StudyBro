@@ -50,15 +50,15 @@ jobs:
       - name: Verify Expo dependency tree
         working-directory: apps/admin-nsg
         run: |
-          node -e "const p=require('./package.json'); console.log(JSON.stringify({expo:p.dependencies.expo,core:p.dependencies['expo-modules-core'],constants:p.dependencies['expo-constants'],router:p.dependencies['expo-router'],systemUI:p.dependencies['expo-system-ui'],react:p.dependencies.react,rn:p.dependencies['react-native']},null,2))"
+          node -e "const p=require('./package.json'); console.log(JSON.stringify({expo:p.dependencies.expo,react:p.dependencies.react,rn:p.dependencies['react-native']},null,2))"
           node -e "const p=require('expo-modules-core/package.json'); console.log('Installed expo-modules-core:',p.version,'main:',p.main); if(!p.main || p.main.endsWith('.ts')) process.exit(1)"
-          npm ls expo expo-modules-core expo-modules-autolinking expo-constants expo-router react-native --depth=2
+          npm ls expo expo-modules-core expo-modules-autolinking expo-constants react-native --depth=2
 
       - name: Generate Admin Android project
         working-directory: apps/admin-nsg
         run: npx expo prebuild --platform android --clean
 
-      - name: Verify and repair Admin Expo autolinking
+      - name: Verify Admin Expo autolinking
         working-directory: apps/admin-nsg
         run: |
           set -euo pipefail

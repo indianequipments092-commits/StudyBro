@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "scheme": "admin-nsg",
-    "plugins": ["expo-router"],
     "android": {
       "package": "com.nsgbro.admin"
     }
